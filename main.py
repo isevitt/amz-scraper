@@ -1,12 +1,13 @@
-import requests
-from bs4 import BeautifulSoup
-import urllib3
-import re
+from selenium import webdriver
+import os
 
-BASE_URL = "https://www.amazon.com/s?i=merchant-items&me="
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location=os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
 
-def get_products_by_store(merchant_id):
-    pass
+driver = webdriver.Chrome(executable_path=os.environ.get["CHROMEDRIVER_PATH"], chrome_options=chrome_options)
 
-if __name__ == "__main__":
-    get_products_by_store("AK3PDFUAKQTEL")
+driver.get("https://www.google.com")
+print(driver.page_source)
