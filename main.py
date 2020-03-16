@@ -1,15 +1,34 @@
 from selenium import webdriver
 import os
+from configs import local
 
+BASE_URL = "https://www.amazon.com/s?i=merchant-items&me="
 CHROMEDRIVER_PATH = "/app/.chromedriver/bin/chromedriver"
-chrome_bin = os.environ.get('GOOGLE_CHROME_BIN', "chromedriver")
+
+
 options = webdriver.ChromeOptions()
-options.binary_location = chrome_bin
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
-options.add_argument('headless')
 options.add_argument('window-size=1200x600')
-driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=options)
 
-driver.get("https://www.google.com")
-print(driver.page_source)
+if not local:
+    chrome_bin = os.environ.get('GOOGLE_CHROME_BIN', "chromedriver")
+    options.binary_location = chrome_bin
+    options.add_argument('headless')
+
+
+
+
+def get_product_list(merchant_id, pages_num):
+    all_asins = []
+    for page in range(1, pages_num+1):
+        driver.get(f"{BASE_URL}{merchant_id}&page={page}")
+        product_list = driver.find_elements_by_xpath("//*[@class='a-link-normal a-text-normal']")
+        page_asins = [i.get_attribute("href").split("/dp/")[1].split("/")[0] for i in product_list]
+        all_asins.append(page_asins)
+    return all_asins
+
+
+if __name__== "__main__":
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROME_PATH", CHROMEDRIVER_PATH), chrome_options=options)
+    print(get_product_list("AK3PDFUAKQTEL", 3))
