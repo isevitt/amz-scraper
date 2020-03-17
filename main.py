@@ -1,9 +1,9 @@
 from selenium import webdriver
 import os
-from configs import local
 from google_sheet_helper import get_google_sheets_client, add_asin_to_sheet, get_sheet
 from dbhelper import DBHelper
-DB = DBHelper()
+local = os.environ.get("LOCAL", False)
+
 
 SELLER_BASE_URL = "https://www.amazon.com/s?i=merchant-items&me="
 PROD_BASE_URL = "https://www.amazon.com/dp/"
@@ -25,8 +25,6 @@ def get_merchants_from_db():
     return DB.get_all_unfinished()
 
 
-
-
 def get_product_list(merchant_id, pages_num):
     all_asins = []
     for page in range(1, pages_num + 1):
@@ -44,20 +42,31 @@ def get_product_details(asin):
 
 
 if __name__ == "__main__":
+    print("starting proccess")
+    DB = DBHelper()
     query_result = get_merchants_from_db()
-    gs_client = get_google_sheets_client()
-    sheet = get_sheet(gs_client)
+    print(f"found {len(query_result)} unfinished merchants")
+    if query_result:
+        gs_client = get_google_sheets_client()
+        sheet = get_sheet(gs_client)
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROME_PATH", CHROMEDRIVER_PATH), chrome_options=options)
+        print("created google sheets and selenium clients")
+        for row in query_result:
+            try:
+                request_id = row[0]
+                print(f"request id {request_id}")
+                asins_list = get_product_list(row[1], NUM_PAGES)
+                for asin in asins_list:
+                    asin_data = get_product_details(asin)
+                    add_asin_to_sheet(sheet, asin_data)
+                DB.mark_as_finished(request_id)
+                print("maerked as finished")
+            except Exception as e:
+                print(e)
+                # TODO: add logging
+            finally:
+                driver.close()
 
-    driver = webdriver.Chrome(executable_path=os.environ.get("CHROME_PATH", CHROMEDRIVER_PATH), chrome_options=options)
-    for row in query_result:
-        try:
-            asins_list = get_product_list(row[1], NUM_PAGES)
-            for asin in asins_list:
-                asin_data = get_product_details(asin)
-                add_asin_to_sheet(sheet, asin_data)
-        except Exception as e:
-            print(e)
-            # TODO: add logging
 
 
 
