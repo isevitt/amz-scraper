@@ -37,7 +37,10 @@ def get_product_list(merchant_id, pages_num, driver):
 def get_product_details(asin, driver):
     driver.get(f"{PROD_BASE_URL}{asin}")
     title = driver.find_element_by_id("productTitle").text
-    price = driver.find_element_by_id("price").text
+    try:
+        price = driver.find_element_by_id("price").text
+    except:
+        price = ' '
     return [asin, title, price]
 
 
