@@ -37,7 +37,7 @@ def get_product_list(merchant_id, pages_num, driver):
 def get_product_details(asin, driver):
     driver.get(f"{PROD_BASE_URL}{asin}")
     title = driver.find_element_by_id("productTitle").text
-    price = driver.find_element_by_class_name("a-price").text
+    price = driver.find_element_by_id("price").text
     return [asin, title, price]
 
 
@@ -59,6 +59,7 @@ def run(merchant_id, num_pages):
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         add_asin_to_sheet(sheet, ["Finished. Time: " + now])
     except Exception as e:
+        add_asin_to_sheet(sheet, ["Error " + str(e)])
         print(e)
     finally:
         driver.close()
