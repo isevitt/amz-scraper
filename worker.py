@@ -36,6 +36,8 @@ def get_product_list(merchant_id, pages_num, driver):
         product_list = driver.find_elements_by_xpath("//*[@class='a-link-normal a-text-normal']")
         page_asins = [i.get_attribute("href").split("/dp/")[1].split("/")[0] for i in product_list]
         all_asins += page_asins
+    if not all_asins:
+        print(driver.page_source)
     return all_asins
 
 
@@ -77,7 +79,6 @@ def run(merchant_id, num_pages):
 
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         add_asin_to_sheet(sheet, ["Finished. Time: " + now])
-        add_asin_to_sheet(sheet, [driver.page_source])
     except Exception as e:
         add_asin_to_sheet(sheet, ["Error " + str(e)])
         print(e)
