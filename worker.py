@@ -7,20 +7,24 @@ from datetime import datetime
 
 SELLER_BASE_URL = "https://www.amazon.com/s?i=merchant-items&me="
 PROD_BASE_URL = "https://www.amazon.com/dp/"
-CHROMEDRIVER_PATH = "/app/.chromedriver/bin/chromedriver"
+
 
 options = webdriver.ChromeOptions()
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
 options.add_argument('window-size=1200x600')
+options.add_argument(
+    '--user-agent="Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166"')
 
 if not local:
+    CHROMEDRIVER_PATH = "/app/.chromedriver/bin/chromedriver"
     # prefs = {"profile.managed_default_content_settings.images": 2}
     # options.add_experimental_option("prefs", prefs)
     chrome_bin = os.environ.get('GOOGLE_CHROME_BIN', "chromedriver")
     options.binary_location = chrome_bin
     options.add_argument('headless')
-    options.add_argument('--user-agent="Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166"')
+else:
+    CHROMEDRIVER_PATH="C:\\Users\\isevi\\Downloads\\chromedriver.exe"
 
 
 
@@ -73,12 +77,16 @@ def run(merchant_id, num_pages):
 
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         add_asin_to_sheet(sheet, ["Finished. Time: " + now])
+        add_asin_to_sheet(sheet, [driver.page_source])
     except Exception as e:
         add_asin_to_sheet(sheet, ["Error " + str(e)])
         print(e)
     finally:
         driver.close()
 
+
+if __name__== "__main__":
+    run("AK3PDFUAKQTEL", 1)
 
 
 
