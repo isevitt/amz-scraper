@@ -2,6 +2,7 @@ from selenium import webdriver
 import os
 from google_sheet_helper import get_google_sheets_client, add_asin_to_sheet, get_sheet
 local = os.environ.get("LOCAL", False)
+from datetime import datetime
 
 
 SELLER_BASE_URL = "https://www.amazon.com/s?i=merchant-items&me="
@@ -49,14 +50,16 @@ def run(merchant_id, num_pages):
     try:
         print("getting product list")
         asins_list = get_product_list(merchant_id, num_pages, driver)
+        now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        add_asin_to_sheet(sheet, ["time:" +  now])
         for asin in asins_list:
             asin_data = get_product_details(asin, driver)
             add_asin_to_sheet(sheet, asin_data)
 
-        add_asin_to_sheet(sheet, ["Finished"])
+        now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        add_asin_to_sheet(sheet, ["Finished. Time: " + now])
     except Exception as e:
         print(e)
-        # TODO: add logging
     finally:
         driver.close()
 
