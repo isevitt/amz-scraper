@@ -41,31 +41,23 @@ def get_product_details(asin):
     return [asin, title]
 
 
-def run():
+def run(merchant_id, num_pages):
     print("starting proccess")
-    DB = DBHelper()
-    query_result = get_merchants_from_db()
-    print(f"found {len(query_result)} unfinished merchants")
-    if query_result:
-        gs_client = get_google_sheets_client()
-        sheet = get_sheet(gs_client)
-        driver = webdriver.Chrome(executable_path=os.environ.get("CHROME_PATH", CHROMEDRIVER_PATH), chrome_options=options)
-        print("created google sheets and selenium clients")
-        for row in query_result:
-            try:
-                request_id = row[0]
-                print(f"request id {request_id}")
-                asins_list = get_product_list(row[1], NUM_PAGES)
-                for asin in asins_list:
-                    asin_data = get_product_details(asin)
-                    add_asin_to_sheet(sheet, asin_data)
-                DB.mark_as_finished(request_id)
-                print("maerked as finished")
-            except Exception as e:
-                print(e)
-                # TODO: add logging
-            finally:
-                driver.close()
+    gs_client = get_google_sheets_client()
+    sheet = get_sheet(gs_client)
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROME_PATH", CHROMEDRIVER_PATH), chrome_options=options)
+    print("created google sheets and selenium clients")
+
+    try:
+        asins_list = get_product_list(merchant_id, num_pages)
+        for asin in asins_list:
+            asin_data = get_product_details(asin)
+            add_asin_to_sheet(sheet, asin_data)
+    except Exception as e:
+        print(e)
+        # TODO: add logging
+    finally:
+        driver.close()
 
 
 
