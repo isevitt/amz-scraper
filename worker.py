@@ -15,8 +15,8 @@ options.add_argument("--no-sandbox")
 options.add_argument('window-size=1200x600')
 
 if not local:
-    prefs = {"profile.managed_default_content_settings.images": 2}
-    options.add_experimental_option("prefs", prefs)
+    # prefs = {"profile.managed_default_content_settings.images": 2}
+    # options.add_experimental_option("prefs", prefs)
     chrome_bin = os.environ.get('GOOGLE_CHROME_BIN', "chromedriver")
     options.binary_location = chrome_bin
     options.add_argument('headless')
