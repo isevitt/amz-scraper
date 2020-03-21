@@ -55,14 +55,15 @@ def get_product_details(asin, driver):
 
 
 def run(merchant_id, num_pages):
-    print("starting proccess")
-    gs_client = get_google_sheets_client()
-    sheet = get_sheet(gs_client)
-    driver = webdriver.Chrome(executable_path=os.environ.get("CHROME_PATH", CHROMEDRIVER_PATH), chrome_options=options)
-    print("created google sheets and selenium clients")
     try:
+        print("starting proccess")
+        gs_client = get_google_sheets_client()
+        sheet = get_sheet(gs_client)
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROME_PATH", CHROMEDRIVER_PATH), chrome_options=options)
+        print("created google sheets and selenium clients")
         print("getting product list")
         asins_list = get_product_list(merchant_id, num_pages, driver)
+        print(f"found {len(asins_list)} asins")
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         add_asin_to_sheet(sheet, ["time:" +  now])
         for asin in asins_list:
@@ -76,6 +77,7 @@ def run(merchant_id, num_pages):
         print(e)
     finally:
         driver.close()
+
 
 
 
