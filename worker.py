@@ -41,7 +41,17 @@ def get_product_details(asin, driver):
         price = driver.find_element_by_id("price").text
     except:
         price = ' '
-    return [asin, title, price]
+    try:
+        count_reviews = driver.find_element_by_id("acrCustomerReviewText").text
+    except:
+        count_reviews = ' '
+    try:
+        amz_choice = driver.find_element_by_class_name("ac-badge-rectangle").text
+    except:
+        amz_choice = ' '
+
+
+    return [asin, title, price, count_reviews, amz_choice]
 
 
 def run(merchant_id, num_pages):
