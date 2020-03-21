@@ -13,8 +13,7 @@ options = webdriver.ChromeOptions()
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
 options.add_argument('window-size=1200x600')
-#options.add_argument(
-#    '--user-agent="Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166"')
+options.add_argument('--user-agent="Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166"')
 
 if not local:
     CHROMEDRIVER_PATH = "/app/.chromedriver/bin/chromedriver"
