@@ -34,8 +34,9 @@ def get_product_list(merchant_id, pages_num, driver):
     for page in range(1, pages_num + 1):
         driver.get(f"{SELLER_BASE_URL}{merchant_id}&page={page}")
         product_list = driver.find_elements_by_xpath("//*[@class='a-link-normal']")
-        page_asins = [i.get_attribute("href").split("/dp/")[1].split("/")[0] for i in product_list]
-        all_asins += page_asins
+        if product_list:
+            page_asins = [i.get_attribute("href").split("/dp/")[1].split("/")[0] for i in product_list]
+            all_asins += page_asins
     if not all_asins:
         print(driver.page_source)
     return all_asins
