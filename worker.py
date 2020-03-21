@@ -20,6 +20,7 @@ if not local:
     chrome_bin = os.environ.get('GOOGLE_CHROME_BIN', "chromedriver")
     options.binary_location = chrome_bin
     options.add_argument('headless')
+    options.add_argument('--user-agent="Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166"')
 
 
 
