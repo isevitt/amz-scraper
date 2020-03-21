@@ -9,7 +9,9 @@ def start_scraping():
         merchant_id = request.args.get("merchant_id")
         num_pages = request.args.get("num_pages")
         print(f"merchant id is {merchant_id}, num_pages is  {num_pages}", file=sys.stdout)
+        run(merchant_id, num_pages)
         return f"request was received for merchant id:  {merchant_id}"
+    
     except Exception as e:
         return f"Error {e}"
 
