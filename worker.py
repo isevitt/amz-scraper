@@ -13,8 +13,8 @@ options = webdriver.ChromeOptions()
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
 options.add_argument('window-size=1200x600')
-options.add_argument(
-    '--user-agent="Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166"')
+#options.add_argument(
+#    '--user-agent="Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166"')
 
 if not local:
     CHROMEDRIVER_PATH = "/app/.chromedriver/bin/chromedriver"
@@ -33,7 +33,7 @@ def get_product_list(merchant_id, pages_num, driver):
     pages_num = int(pages_num)
     for page in range(1, pages_num + 1):
         driver.get(f"{SELLER_BASE_URL}{merchant_id}&page={page}")
-        product_list = driver.find_elements_by_xpath("//*[@class='a-link-normal a-text-normal']")
+        product_list = driver.find_elements_by_xpath("//*[@class='a-link-normal']")
         page_asins = [i.get_attribute("href").split("/dp/")[1].split("/")[0] for i in product_list]
         all_asins += page_asins
     if not all_asins:
@@ -74,8 +74,12 @@ def run(merchant_id, num_pages):
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         add_asin_to_sheet(sheet, ["time:" +  now])
         for asin in asins_list:
-            asin_data = get_product_details(asin, driver)
-            add_asin_to_sheet(sheet, asin_data)
+            try:
+                asin_data = get_product_details(asin, driver)
+                add_asin_to_sheet(sheet, asin_data)
+            except Exception as e:
+                print(str(e))
+                continue
 
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         add_asin_to_sheet(sheet, ["Finished. Time: " + now])
