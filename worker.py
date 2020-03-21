@@ -41,7 +41,7 @@ def get_product_details(asin):
     return [asin, title]
 
 
-if __name__ == "__main__":
+def run():
     print("starting proccess")
     DB = DBHelper()
     query_result = get_merchants_from_db()
